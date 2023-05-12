@@ -2,6 +2,7 @@ package GUI;
 
 import Garage.Modele;
 import Garage.Option;
+import Modele.Garage;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -54,6 +55,12 @@ public class JFrameGarage extends JFrame
         setContentPane(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+
+        Garage garage;
+        garage = Garage.getInstance();
+
+        garage.importeModeles("Modeles.csv");
+        garage.importeOptions("Options.csv");
 
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(radioButtonDiesel);

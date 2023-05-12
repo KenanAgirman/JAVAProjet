@@ -4,6 +4,8 @@ public class Employe extends Intervenant{
     private String login;
     private String motDePasse;
     private String fonction;
+    public static String ADMINISTRATIF = "ADMINISTRATIF";
+    public static String VENDEUR = "VENDEUR";
 
     public Employe(){
         super();
@@ -40,8 +42,19 @@ public class Employe extends Intervenant{
         return fonction;
     }
 
-    public void setFonction(String fonction) {
-        this.fonction = fonction;
+    public void setFonction(String fonction)
+    {
+        if(fonction==ADMINISTRATIF)
+        {
+            this.fonction = fonction;
+        }
+        else
+        {
+            if(fonction==VENDEUR)
+            {
+                this.fonction = fonction;
+            }
+        }
     }
 
     @Override

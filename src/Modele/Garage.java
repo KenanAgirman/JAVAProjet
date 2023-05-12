@@ -1,6 +1,9 @@
 package Modele;
 import Garage.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class Garage {
@@ -252,4 +255,92 @@ public class Garage {
     {
         return contrats.get(indice).getVoiture();
     }
+
+    //----------------------------------------------------------------------------------
+    //---------		Flux
+    //----------------------------------------------------------------------------------
+
+    public void importeModeles(String nomFichier) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(nomFichier));
+
+            String buffer;
+            String[] tokens;
+            Modele m;
+            int choix;
+
+            br.readLine(); // skip first line
+
+            while ((buffer = br.readLine()) != null) {
+                //System.out.println("Voici la chaine lue:\n" + buffer + "\n");
+
+                tokens = buffer.split(";");
+
+                m = new Modele();
+
+                m.setNom(tokens[0]);
+
+                m.setPuissance(Integer.parseInt(tokens[1]));
+
+                if ("essence".equals(tokens[2])) choix = 1;
+                else if ("hybride".equals(tokens[2])) choix = 2;
+                else if ("electrique".equals(tokens[2])) choix = 3;
+                else choix = 4;
+
+                switch (choix) {
+                    case 1: m.setMoteur(Moteur.Essence);
+                        break;
+
+                    case 2: m.setMoteur(Moteur.Hybride);
+                        break;
+
+                    case 3: m.setMoteur(Moteur.Electrique);
+                        break;
+
+                    case 4: m.setMoteur(Moteur.Diesel);
+                }
+
+                m.setImage(tokens[3]);
+
+                m.setPrixDeBase((float) Double.parseDouble(tokens[4]));
+
+                ajouteModele(m);
+            }
+
+            br.close();
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la lecture du fichier " + nomFichier + " : " + e.getMessage());
+        }
+    }
+
+    public void importeOptions(String nomFichier) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(nomFichier));
+
+            String buffer;
+            String[] tokens;
+            Option o;
+
+            br.readLine(); // skip first line
+
+            while ((buffer = br.readLine()) != null) {
+                tokens = buffer.split(";");
+
+                o = new Option();
+
+                o.setCode(tokens[0]);
+
+                o.setIntitule(tokens[1]);
+
+                o.setPrix((float) Double.parseDouble(tokens[2]));
+
+                ajouteOption(o);
+            }
+
+            br.close();
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la lecture du fichier " + nomFichier + " : " + e.getMessage());
+        }
+    }
+
 }
