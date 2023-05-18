@@ -1,8 +1,8 @@
 package GUI;
 
+import Controller.Controleur;
 import Garage.Modele;
 import Garage.Option;
-import Modele.Garage;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -23,29 +23,31 @@ public class JFrameGarage extends JFrame
     private JScrollPane jScrollPaneEmployes;
     private JScrollPane jScrollPaneClients;
     private JLabel labelImage;
-    private JComboBox comboBoxModelesDisponibles;
+    public JComboBox comboBoxModelesDisponibles;
     private JButton buttonChoisirModele;
-    private JComboBox comboBoxOptionsDisponibles;
+    public JComboBox comboBoxOptionsDisponibles;
     private JButton buttonChoisirOption;
     private JScrollPane jScrollPaneOptionsChoisies;
-    private JTable tableOptionsChoisies;
+    public JTable tableOptionsChoisies;
     private JTextField textFieldNomProjet;
-    private JTextField textFieldModele;
-    private JTextField textFieldPuissance;
-    private JTextField textFieldPrixDeBase;
-    private JRadioButton radioButtonEssence;
-    private JRadioButton radioButtonDiesel;
-    private JRadioButton radioButtonElectrique;
-    private JRadioButton radioButtonHybride;
+    public JTextField textFieldModele;
+    public JTextField textFieldPuissance;
+    public JTextField textFieldPrixDeBase;
+    public JRadioButton radioButtonEssence;
+    public JRadioButton radioButtonDiesel;
+    public JRadioButton radioButtonElectrique;
+    public JRadioButton radioButtonHybride;
     private JButton buttonSupprimerOption;
     private JButton buttonAccorderReduction;
     private JTextField textFieldPrixAvecOptions;
     private JButton buttonNouveauProjet;
     private JButton buttonOuvrirProjet;
     private JButton buttonEnregistrerProjet;
-
+    private JMenuItem menuItemQuitter;
+    private JMenuItem menuItemLogin;
+    private JMenuItem menuItemNouveauModele;
+    private JMenuItem menuItemNouvelleOption;
     private JTable tableEmployes;
-
     private JTable tableClients;
 
     public JFrameGarage()
@@ -55,12 +57,6 @@ public class JFrameGarage extends JFrame
         setContentPane(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-
-        Garage garage;
-        garage = Garage.getInstance();
-
-        garage.importeModeles("Modeles.csv");
-        garage.importeOptions("Options.csv");
 
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(radioButtonDiesel);
@@ -74,7 +70,7 @@ public class JFrameGarage extends JFrame
 
         JMenu menuConnexion = new JMenu("Connexion");
         menuBar.add(menuConnexion);
-        JMenuItem menuItemLogin = new JMenuItem("Login");
+        menuItemLogin = new JMenuItem("Login");
         menuConnexion.add(menuItemLogin);
         JMenuItem menuItemLogout = new JMenuItem("Logout");
         menuConnexion.add(menuItemLogout);
@@ -82,7 +78,8 @@ public class JFrameGarage extends JFrame
         JMenuItem menuItemResetMotDePasse = new JMenuItem("Reset mot de passe");
         menuConnexion.add(menuItemResetMotDePasse);
         menuConnexion.addSeparator();
-        JMenuItem menuItemQuitter = new JMenuItem("Quitter");
+
+        menuItemQuitter = new JMenuItem("Quitter");
         menuConnexion.add(menuItemQuitter);
 
         JMenu menuEmployes = new JMenu("Employés");
@@ -91,43 +88,10 @@ public class JFrameGarage extends JFrame
         menuBar.add(menuClients);
         JMenu menuVoiture = new JMenu("Voiture");
         menuBar.add(menuVoiture);
-        JMenuItem menuItemNouveauModele = new JMenuItem("Nouveau modèle");
+        menuItemNouveauModele = new JMenuItem("Nouveau modèle");
         menuVoiture.add(menuItemNouveauModele);
-        JMenuItem menuItemNouvelleOption = new JMenuItem("Nouvelle Option");
+        menuItemNouvelleOption = new JMenuItem("Nouvelle Option");
         menuVoiture.add(menuItemNouvelleOption);
-
-        menuItemNouveauModele.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        JDialogNouveauModele dialog = new JDialogNouveauModele();
-                        dialog.pack();
-                        dialog.setVisible(true);
-                        if (dialog.isOk())
-                        {
-
-                        }
-                        dialog.dispose();
-                    }
-                }
-        );
-
-        menuItemNouvelleOption.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JDialogNouvelleOption dialog = new JDialogNouvelleOption();
-                dialog.setVisible(true);
-                if (dialog.isOk())
-                {
-                    System.out.println("Code = " + dialog.getCode());
-                    System.out.println("Intitule = " + dialog.getIntitule());
-                    System.out.println("Prix = " + dialog.getPrix());
-                    Option option = new Option(dialog.getCode(),dialog.getIntitule(),dialog.getPrix());
-                    comboBoxOptionsDisponibles.addItem(option);
-                }
-                dialog.dispose();
-            }
-        });
 
         // Table des employes
         Object[][] data = new Object[][]{
@@ -169,50 +133,25 @@ public class JFrameGarage extends JFrame
         String[] nomsColonnes4 = { "Code", "Prix", "Intitule"};
         tableModel.setColumnIdentifiers(nomsColonnes4);
 
-        menuItemQuitter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-
-        menuItemLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JDialogLogin dialog = new JDialogLogin(null,true,"Entrée en session...");
-                dialog.setVisible(true);
-            }
-        });
-
         pack();
         setLocation((screen.width - this.getSize().width)/2,(screen.height - this.getSize().height)/2);
-        buttonChoisirModele.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Modele modele = (Modele) comboBoxModelesDisponibles.getSelectedItem();
-                if (modele == null) return;
-                textFieldModele.setText(modele.getNom());
-                textFieldPuissance.setText(String.valueOf(modele.getPuissance()));
-                textFieldPrixDeBase.setText(String.valueOf(modele.getPrixDeBase()));
-                if (modele.getMoteur().equals("Essence")) radioButtonEssence.setSelected(true);
-                if (modele.getMoteur().equals("Diesel")) radioButtonDiesel.setSelected(true);
-                if (modele.getMoteur().equals("Electrique")) radioButtonElectrique.setSelected(true);
-                if (modele.getMoteur().equals("Hybride")) radioButtonHybride.setSelected(true);
-            }
-        });
-        buttonChoisirOption.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Option option = (Option) comboBoxOptionsDisponibles.getSelectedItem();
-                if (option == null) return;
-                DefaultTableModel model = (DefaultTableModel) tableOptionsChoisies.getModel();
-                Vector ligne = new Vector();
-                ligne.add(option.getCode());
-                ligne.add(option.getIntitule());
-                ligne.add(option.getPrix());
-                model.addRow(ligne);
-            }
-        });
+
+        buttonChoisirModele.setText("Choisir Modele");
+        buttonChoisirOption.setText("Choisir Option");
+    }
+
+    public void setControleur(Controleur c)
+    {
+        menuItemQuitter.addActionListener(c);
+        menuItemLogin.addActionListener(c);
+
+        menuItemNouveauModele.addActionListener(c);
+        menuItemNouvelleOption.addActionListener(c);
+
+        buttonChoisirModele.addActionListener(c);
+        buttonChoisirOption.addActionListener(c);
+
+        this.addWindowListener(c);
     }
 
     public static void main(String[] args) {

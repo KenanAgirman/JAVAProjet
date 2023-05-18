@@ -288,16 +288,16 @@ public class Garage {
                 else choix = 4;
 
                 switch (choix) {
-                    case 1: m.setMoteur(Moteur.Essence);
+                    case 1: m.setMoteur("Essence");
                         break;
 
-                    case 2: m.setMoteur(Moteur.Hybride);
+                    case 2: m.setMoteur("Hybride");
                         break;
 
-                    case 3: m.setMoteur(Moteur.Electrique);
+                    case 3: m.setMoteur("Electrique");
                         break;
 
-                    case 4: m.setMoteur(Moteur.Diesel);
+                    case 4: m.setMoteur("Diesel");
                 }
 
                 m.setImage(tokens[3]);

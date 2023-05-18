@@ -1,3 +1,5 @@
+import Controller.Controleur;
+import GUI.JFrameGarage;
 import Garage.*;
 import Modele.Garage;
 
@@ -7,37 +9,22 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        //creation des donnees
-//        List<Option> options = new ArrayList<Option>();
-//        options.add(new Option("LLL","TestOptionModele",75));
-//        options.add(new Option("KKKK", "HEHE", 99.6F));
+
+//        Garage garage;
+//        garage = Garage.getInstance();
 //
-//        Modele m = new Modele("Test", 55, Moteur.Essence, 2544.66F, options, "test");
-//        Option o = new Option("566ss","TestOption",55);
-//        Voiture v = new Voiture(m,"Voiture1");
+//        garage.importeModeles("Modeles.csv");
+//        garage.importeOptions("Options.csv");
 //
-//        //test des tostring
-//        System.out.println(m.toString());
-//        System.out.println(o.toString());
-//        System.out.println(v.toString());
-//        System.out.println(v.getModele().getOptions().get(0));
-//
-//        //Test du method ajout et retire
-//        m.ajouterOption(o);
-//        System.out.println(m.toString());
-//
-//        m.retireOption(o);
-//        System.out.println(m.toString());
+//        System.out.println(garage.getModeles());
+//        System.out.println(garage.getOptions());
 
-        Garage garage;
-        garage = Garage.getInstance();
+        Garage garage = Garage.getInstance();
+        JFrameGarage fenetre = new JFrameGarage();
 
-        garage.importeModeles("Modeles.csv");
-        garage.importeOptions("Options.csv");
+        Controleur controleur = new Controleur(garage, fenetre);
+        fenetre.setControleur(controleur);
 
-        System.out.println(garage.getModeles());
-        System.out.println(garage.getOptions());
-
-
+        fenetre.setVisible(true);
     }
 }

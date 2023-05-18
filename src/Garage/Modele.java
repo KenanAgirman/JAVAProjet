@@ -6,7 +6,7 @@ import java.util.List;
 public class Modele {
     private String nom;
     private int puissance;
-    private Moteur moteur;
+    private String moteur;
     private float prixDeBase;
     private List<Option> options;
     private String image;
@@ -14,13 +14,13 @@ public class Modele {
     public Modele(){
         this.nom = "";
         this.puissance = 0;
-        this.moteur = Moteur.Essence;
+        this.moteur = "";
         this.prixDeBase = 0.0f;
         this.options = new ArrayList<>();
         this.image = "";
     }
 
-    public Modele(String nom, int puissance, Moteur moteur, float prixDeBase, List<Option> options, String image) {
+    public Modele(String nom, int puissance, String moteur, float prixDeBase, List<Option> options, String image) {
         this.nom = nom;
         this.puissance = puissance;
         this.moteur = moteur;
@@ -45,12 +45,12 @@ public class Modele {
         this.puissance = puissance;
     }
 
-    public Moteur getMoteur() {
+    public String getMoteur() {
         return moteur;
     }
 
-    public void setMoteur(Moteur moteur) {
-        this.moteur = Moteur.Essence;
+    public void setMoteur(String moteur) {
+        this.moteur = moteur;
     }
 
     public float getPrixDeBase() {
@@ -92,7 +92,6 @@ public class Modele {
                 ", puissance=" + puissance +
                 ", moteur='" + moteur + '\'' +
                 ", prixDeBase=" + prixDeBase +
-                ", options=" + options +
                 '}';
     }
 }
