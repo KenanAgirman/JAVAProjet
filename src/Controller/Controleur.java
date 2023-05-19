@@ -33,7 +33,7 @@ public class Controleur extends WindowAdapter implements ActionListener
         //pour le moment cela cause des probleme avec le interface parce qu'il prennent trop d'espace,
         // mais ca marche, il faut juste modifier l'interface un peut
         for (Option opt: this.instanceGarage.getOptions()) {
-            //this.viewGarage.comboBoxOptionsDisponibles.addItem(opt);
+            this.viewGarage.comboBoxOptionsDisponibles.addItem(opt);
         }
 
         for (Modele mod: this.instanceGarage.getModeles()) {
@@ -60,6 +60,9 @@ public class Controleur extends WindowAdapter implements ActionListener
         }
         if(e.getActionCommand().equals("Choisir Option")){
             onChoisirOption();
+        }
+        if(e.getActionCommand().equals("Nouveau Projet")){
+            onNouveauProjet();
         }
     }
 
@@ -89,7 +92,7 @@ public class Controleur extends WindowAdapter implements ActionListener
         if (dialog.isOk())
         {
             System.out.println("Choix : " + dialog.getNom() + "-" + dialog.getMoteur() + "-" + dialog.getPuissance() + "-" + dialog.getPrixDeBase());
-            Modele modele = new Modele(dialog.getNom(),dialog.getPuissance(),dialog.getMoteur(),dialog.getPrixDeBase(), new ArrayList<>(), "208.jpg");
+            Modele modele = new Modele(dialog.getNom(),dialog.getPuissance(),dialog.getMoteur(),dialog.getPrixDeBase(), new ArrayList<>(), dialog.getImage());
             viewGarage.comboBoxModelesDisponibles.addItem(modele);
         }
         dialog.dispose();
@@ -121,6 +124,16 @@ public class Controleur extends WindowAdapter implements ActionListener
         if (modele.getMoteur().equals("Diesel")) viewGarage.radioButtonDiesel.setSelected(true);
         if (modele.getMoteur().equals("Electrique")) viewGarage.radioButtonElectrique.setSelected(true);
         if (modele.getMoteur().equals("Hybride")) viewGarage.radioButtonHybride.setSelected(true);
+
+        String filepath;
+
+        if(modele.getImage().startsWith("C:"))
+        {
+            filepath = modele.getImage();
+        } else filepath = "src/GUI/images/"+modele.getImage();
+
+        ImageIcon imageIcon = new ImageIcon(filepath);
+        viewGarage.labelImage.setIcon(imageIcon);
     }
 
     private void onChoisirOption()
@@ -133,5 +146,12 @@ public class Controleur extends WindowAdapter implements ActionListener
         ligne.add(option.getIntitule());
         ligne.add(option.getPrix());
         model.addRow(ligne);
+    }
+
+    private void onNouveauProjet()
+    {
+        System.out.println("Button clicked!");
+        DefaultTableModel model = (DefaultTableModel) viewGarage.tableOptionsChoisies.getModel();
+        model.setRowCount(0);
     }
 }

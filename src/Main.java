@@ -1,23 +1,13 @@
 import Controller.Controleur;
 import GUI.JFrameGarage;
-import Garage.*;
 import Modele.Garage;
 
-
-import java.util.ArrayList;
-import java.util.List;
+import com.formdev.flatlaf.FlatDarculaLaf;
 
 public class Main {
     public static void main(String[] args) {
-
-//        Garage garage;
-//        garage = Garage.getInstance();
-//
-//        garage.importeModeles("Modeles.csv");
-//        garage.importeOptions("Options.csv");
-//
-//        System.out.println(garage.getModeles());
-//        System.out.println(garage.getOptions());
+        //pour ajouter notre nouveau theme sur le application
+        FlatDarculaLaf.setup();
 
         Garage garage = Garage.getInstance();
         JFrameGarage fenetre = new JFrameGarage();

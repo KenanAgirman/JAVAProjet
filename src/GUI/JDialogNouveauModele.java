@@ -1,6 +1,7 @@
 package GUI;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,11 +14,13 @@ public class JDialogNouveauModele extends JDialog
     private JSpinner spinnerPuissance;
     private JComboBox comboBoxMoteur;
     private JTextField textFieldPrixDeBase;
+    private JButton BrowseImage;
 
     private String nom;
     private int puissance;
     private String moteur;
     private float prixDeBase;
+    private String image = "";
     private boolean ok;
 
     public JDialogNouveauModele()
@@ -36,6 +39,22 @@ public class JDialogNouveauModele extends JDialog
         SpinnerModel model = new SpinnerNumberModel(100,30,300,5);
         spinnerPuissance.setModel(model);
 
+        BrowseImage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG and JPG Images", "png", "jpg");
+                fileChooser.setFileFilter(filter);
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    //System.out.println("Selected file: " + selectedFilePath);
+
+                    image = selectedFilePath;
+                }
+            }
+        });
+
         buttonAnnuler.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -46,12 +65,23 @@ public class JDialogNouveauModele extends JDialog
         buttonCreer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                nom = textFieldNom.getText();
-                puissance = (int) spinnerPuissance.getValue();
-                moteur = (String) comboBoxMoteur.getSelectedItem();
-                prixDeBase = Float.parseFloat(textFieldPrixDeBase.getText());
-                ok = true;
-                setVisible(false);
+                try {
+                    if(textFieldNom.getText().isEmpty()) throw new Exception("veuillez entrer une valeur valide pour le nom");
+                    else nom = textFieldNom.getText();
+                    puissance = (int) spinnerPuissance.getValue();
+                    moteur = (String) comboBoxMoteur.getSelectedItem();
+                    if(textFieldPrixDeBase.getText().isEmpty()) throw new Exception("veuillez entrer une valeur valide pour le prix");
+                    else prixDeBase = Float.parseFloat(textFieldPrixDeBase.getText());
+                    if(image.isEmpty()) throw new Exception("veuillez sélectionner une image");
+                    ok = true;
+                    setVisible(false);
+                }
+                catch (NumberFormatException exception) {
+                    JOptionPane.showMessageDialog(null, "Veuillez entrer un nombre", "Erreur Float", JOptionPane.ERROR_MESSAGE);
+                }
+                catch (Exception exception) {
+                    JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
@@ -81,6 +111,9 @@ public class JDialogNouveauModele extends JDialog
 
     public float getPrixDeBase() {
         return prixDeBase;
+    }
+    public String getImage() {
+        return image;
     }
 
     public boolean isOk() {

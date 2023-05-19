@@ -22,7 +22,7 @@ public class JFrameGarage extends JFrame
     private JTable tableContrats;
     private JScrollPane jScrollPaneEmployes;
     private JScrollPane jScrollPaneClients;
-    private JLabel labelImage;
+    public JLabel labelImage;
     public JComboBox comboBoxModelesDisponibles;
     private JButton buttonChoisirModele;
     public JComboBox comboBoxOptionsDisponibles;
@@ -138,6 +138,7 @@ public class JFrameGarage extends JFrame
 
         buttonChoisirModele.setText("Choisir Modele");
         buttonChoisirOption.setText("Choisir Option");
+        buttonNouveauProjet.setText("Nouveau Projet");
     }
 
     public void setControleur(Controleur c)
@@ -150,6 +151,7 @@ public class JFrameGarage extends JFrame
 
         buttonChoisirModele.addActionListener(c);
         buttonChoisirOption.addActionListener(c);
+        buttonNouveauProjet.addActionListener(c);
 
         this.addWindowListener(c);
     }

@@ -87,11 +87,6 @@ public class Modele {
 
     @Override
     public String toString() {
-        return "Modele{" +
-                "nom='" + nom + '\'' +
-                ", puissance=" + puissance +
-                ", moteur='" + moteur + '\'' +
-                ", prixDeBase=" + prixDeBase +
-                '}';
+        return "Modele{" + nom + " | " + puissance + " | " + moteur + " | " + prixDeBase + '}';
     }
 }

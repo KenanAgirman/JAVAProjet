@@ -43,11 +43,7 @@ public class Option {
 
     @Override
     public String toString() {
-        return "Option{" +
-                "code='" + code + '\'' +
-                ", intitule='" + intitule + '\'' +
-                ", prix=" + prix +
-                '}';
+        return "Option{" + code + " | " + intitule + " | " + prix + '}';
     }
 
 }

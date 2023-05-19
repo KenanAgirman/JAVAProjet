@@ -37,11 +37,25 @@ public class JDialogNouvelleOption extends JDialog
         buttonCreerOption.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                code = textFieldCode.getText();
-                intitule = textFieldIntitule.getText();
-                prix = Float.parseFloat(textFieldPrix.getText());
-                ok = true;
-                setVisible(false);
+                try {
+                    if(textFieldCode.getText().isEmpty()) throw new Exception("veuillez entrer une valeur pour le code");
+                    else if (textFieldCode.getText().length() != 4) throw new Exception("la longueur minimale et maximale du code est de 4");
+                    else code = textFieldCode.getText();
+
+                    if (textFieldIntitule.getText().isEmpty()) throw new Exception("veuillez entrer une valeur pour l'intitule'");
+                    else intitule = textFieldIntitule.getText();
+
+                    if(textFieldPrix.getText().isEmpty()) throw new Exception("veuillez entrer une valeur valide pour le prix");
+                    else prix = Float.parseFloat(textFieldPrix.getText());
+                    ok = true;
+                    setVisible(false);
+                }
+                catch (NumberFormatException exception) {
+                    JOptionPane.showMessageDialog(null, "Veuillez entrer un nombre", "Erreur Float", JOptionPane.ERROR_MESSAGE);
+                }
+                catch (Exception exception) {
+                    JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
