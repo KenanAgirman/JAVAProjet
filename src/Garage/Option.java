@@ -1,6 +1,8 @@
 package Garage;
 
-public class Option {
+import java.io.Serializable;
+
+public class Option implements Serializable {
     private String code;
     private String intitule;
     private float prix;
@@ -39,6 +41,15 @@ public class Option {
 
     public void setPrix(float prix) {
         this.prix = prix;
+    }
+
+    public int reduction()
+    {
+        if(getPrix() < 50.0f) return -1;
+
+        prix -= 50.0f;
+
+        return 0;
     }
 
     @Override

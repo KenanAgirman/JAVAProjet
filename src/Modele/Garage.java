@@ -1,9 +1,7 @@
 package Modele;
 import Garage.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 
 public class Garage {
@@ -341,6 +339,23 @@ public class Garage {
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier " + nomFichier + " : " + e.getMessage());
         }
+    }
+
+    public void SaveProjetEnCours(String nomFichier) throws FileNotFoundException, IOException
+    {
+        FileOutputStream fos = new FileOutputStream(nomFichier);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+        oos.writeObject(projetEnCours);
+        oos.flush();
+    }
+
+    public void LoadProjetEnCours(String nomFichier) throws FileNotFoundException, IOException, ClassNotFoundException
+    {
+        FileInputStream fis = new FileInputStream(nomFichier);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+
+        projetEnCours = (Voiture) ois.readObject();
     }
 
 }

@@ -1,9 +1,10 @@
 package Garage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Modele {
+public class Modele implements Serializable {
     private String nom;
     private int puissance;
     private String moteur;

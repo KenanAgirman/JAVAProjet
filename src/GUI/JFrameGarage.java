@@ -29,7 +29,7 @@ public class JFrameGarage extends JFrame
     private JButton buttonChoisirOption;
     private JScrollPane jScrollPaneOptionsChoisies;
     public JTable tableOptionsChoisies;
-    private JTextField textFieldNomProjet;
+    public JTextField textFieldNomProjet;
     public JTextField textFieldModele;
     public JTextField textFieldPuissance;
     public JTextField textFieldPrixDeBase;
@@ -39,7 +39,7 @@ public class JFrameGarage extends JFrame
     public JRadioButton radioButtonHybride;
     private JButton buttonSupprimerOption;
     private JButton buttonAccorderReduction;
-    private JTextField textFieldPrixAvecOptions;
+    public JTextField textFieldPrixAvecOptions;
     private JButton buttonNouveauProjet;
     private JButton buttonOuvrirProjet;
     private JButton buttonEnregistrerProjet;
@@ -139,6 +139,9 @@ public class JFrameGarage extends JFrame
         buttonChoisirModele.setText("Choisir Modele");
         buttonChoisirOption.setText("Choisir Option");
         buttonNouveauProjet.setText("Nouveau Projet");
+        buttonSupprimerOption.setText("Supprimer Option");
+        buttonEnregistrerProjet.setText("Enregistrer Projet");
+        buttonOuvrirProjet.setText("Ouvrir Projet");
     }
 
     public void setControleur(Controleur c)
@@ -152,6 +155,10 @@ public class JFrameGarage extends JFrame
         buttonChoisirModele.addActionListener(c);
         buttonChoisirOption.addActionListener(c);
         buttonNouveauProjet.addActionListener(c);
+        buttonSupprimerOption.addActionListener(c);
+        buttonAccorderReduction.addActionListener(c);
+        buttonEnregistrerProjet.addActionListener(c);
+        buttonOuvrirProjet.addActionListener(c);
 
         this.addWindowListener(c);
     }

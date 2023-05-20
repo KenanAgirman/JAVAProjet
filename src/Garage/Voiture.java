@@ -1,6 +1,8 @@
 package Garage;
 
-public class Voiture {
+import java.io.Serializable;
+
+public class Voiture implements Serializable {
     private Modele modele;
     private String nom;
 
