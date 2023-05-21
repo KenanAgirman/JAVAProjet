@@ -20,8 +20,8 @@ public class JFrameGarage extends JFrame
     private JButton supprimerContratButton;
     private JButton visualiserVoitureButton;
     private JTable tableContrats;
-    private JScrollPane jScrollPaneEmployes;
-    private JScrollPane jScrollPaneClients;
+    public JScrollPane jScrollPaneEmployes;
+    public JScrollPane jScrollPaneClients;
     public JLabel labelImage;
     public JComboBox comboBoxModelesDisponibles;
     private JButton buttonChoisirModele;
@@ -48,7 +48,11 @@ public class JFrameGarage extends JFrame
     private JMenuItem menuItemNouveauModele;
     private JMenuItem menuItemNouvelleOption;
     private JMenuItem menuItemNouveauEmploye;
+    private JMenuItem menuItemSupprimerEmployeParNum;
+    private JMenuItem menuItemSupprimerEmployeParSelect;
     private JMenuItem menuItemNouveauClient;
+    private JMenuItem menuItemSupprimerClientParNum;
+    private JMenuItem menuItemSupprimerClientParSelect;
 
     private JTable tableEmployes;
     private JTable tableClients;
@@ -89,11 +93,19 @@ public class JFrameGarage extends JFrame
         menuBar.add(menuEmployes);
         menuItemNouveauEmploye = new JMenuItem("Nouveau Employe");
         menuEmployes.add(menuItemNouveauEmploye);
+        menuItemSupprimerEmployeParNum = new JMenuItem("Supprimer employe par numero");
+        menuEmployes.add(menuItemSupprimerEmployeParNum);
+        menuItemSupprimerEmployeParSelect = new JMenuItem("Supprimer employe selectionner");
+        menuEmployes.add(menuItemSupprimerEmployeParSelect);
 
         JMenu menuClients = new JMenu("Clients");
         menuBar.add(menuClients);
         menuItemNouveauClient = new JMenuItem("Nouveau Client");
         menuClients.add(menuItemNouveauClient);
+        menuItemSupprimerClientParNum = new JMenuItem("Supprimer client par numero");
+        menuClients.add(menuItemSupprimerClientParNum);
+        menuItemSupprimerClientParSelect = new JMenuItem("Supprimer client selectionner");
+        menuClients.add(menuItemSupprimerClientParSelect);
 
         JMenu menuVoiture = new JMenu("Voiture");
         menuBar.add(menuVoiture);
@@ -103,14 +115,13 @@ public class JFrameGarage extends JFrame
         menuVoiture.add(menuItemNouvelleOption);
 
         // Table des employes
-        Object[][] data = new Object[][]{
-                {Integer.valueOf(1), "Wagner", "Jean-Marc", "Vendeur"},
-                {Integer.valueOf(2), "Charlet", "Christophe", "Administratif"}
-        };
-        String[] nomsColonnes = { "Num", "Nom", "Prénom", "Fonction"};
-        tableEmployes = new JTable(data, nomsColonnes);
+        // Table des employes
+        tableEmployes = new JTable();
         int[] taillesColonnes = {30,60,60,60};
         TableColumn col = null;
+        DefaultTableModel tableModelEmp = (DefaultTableModel) tableEmployes.getModel();
+        String[] nomsColonnes = { "Num", "Nom", "Prénom", "Fonction"};
+        tableModelEmp.setColumnIdentifiers(nomsColonnes);
         for (int i=0; i<taillesColonnes.length; i++)
         {
             col = tableEmployes.getColumnModel().getColumn(i);
@@ -123,13 +134,6 @@ public class JFrameGarage extends JFrame
         DefaultTableModel tableModel = (DefaultTableModel) tableClients.getModel();
         String[] nomsColonnes2 = { "Num", "Nom", "Prénom", "GSM"};
         tableModel.setColumnIdentifiers(nomsColonnes2);
-        Vector ligne = new Vector();
-        ligne.add(Integer.valueOf(1));
-        ligne.add("Wagner");
-        ligne.add("Jean-Marc");
-        ligne.add("0478/75.53.36");
-        tableModel.addRow(ligne);
-        //tableClients.setModel(tableModel);
         jScrollPaneClients.setViewportView(tableClients);
 
         // Table des contrats
@@ -165,9 +169,13 @@ public class JFrameGarage extends JFrame
 
         //employe
         menuItemNouveauEmploye.addActionListener(c);
+        menuItemSupprimerEmployeParNum.addActionListener(c);
+        menuItemSupprimerEmployeParSelect.addActionListener(c);
 
         //client
         menuItemNouveauClient.addActionListener(c);
+        menuItemSupprimerClientParNum.addActionListener(c);
+        menuItemSupprimerClientParSelect.addActionListener(c);
 
         //les different bouton pour les options/modeles
         buttonChoisirModele.addActionListener(c);

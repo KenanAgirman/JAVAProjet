@@ -78,8 +78,20 @@ public class Controleur extends WindowAdapter implements ActionListener
         if(e.getActionCommand().equals("Nouveau Employe")){
             onNouveauEmploye();
         }
+        if(e.getActionCommand().equals("Supprimer employe par numero")){
+            onSupprimerEmpParNum();
+        }
+        if(e.getActionCommand().equals("Supprimer employe selectionner")){
+            onSupprimerEmpSelect();
+        }
         if(e.getActionCommand().equals("Nouveau Client")){
             onNouveauClient();
+        }
+        if(e.getActionCommand().equals("Supprimer client par numero")){
+            onSupprimerCliParNum();
+        }
+        if(e.getActionCommand().equals("Supprimer client selectionner")){
+            onSupprimerCliSelect();
         }
     }
 
@@ -389,8 +401,80 @@ public class Controleur extends WindowAdapter implements ActionListener
         if (dialog.isOk())
         {
             System.out.println("Employe: " + dialog.getNom() + " - " + dialog.getPrenom() + " - " + dialog.getLogin() + " - " + dialog.getFonction());
+
+            instanceGarage.ajouteEmploye(dialog.getNom(),dialog.getPrenom(),dialog.getLogin(),dialog.getFonction());
+
+            JTable tableEmployes =  (JTable) viewGarage.jScrollPaneEmployes.getViewport().getView();
+            DefaultTableModel model = (DefaultTableModel) tableEmployes.getModel();
+
+            Vector ligne = new Vector();
+            ligne.add(Integer.valueOf(Personne.numCourant));
+            ligne.add(dialog.getNom());
+            ligne.add(dialog.getPrenom());
+            ligne.add(dialog.getFonction());
+            model.addRow(ligne);
+
+            viewGarage.jScrollPaneEmployes.setViewportView(tableEmployes);
+
+            //System.out.println(instanceGarage.getEmployes());
         }
         dialog.dispose();
+    }
+
+    private void onSupprimerEmpParNum()
+    {
+        try {
+            JDialogSupprimerParNumero dialog = new JDialogSupprimerParNumero();
+            dialog.pack();
+            dialog.setTitle("Suppresion Employe");
+            dialog.setVisible(true);
+            if (dialog.isOk())
+            {
+                System.out.println("Numero Employe a Supprimer: " + dialog.getNumero());
+
+                System.out.println("Avant : " + instanceGarage.getEmployes());
+
+                int index = instanceGarage.supprimeEmployeParNumero(dialog.getNumero());
+
+                if(index == -3) throw new Exception("il n'y a actuellement aucun employé");
+                if(index == -1) throw new Exception("L'employé avec ce numéro n'existe pas");
+                if(index == -2) throw new Exception("cet employé existe dans la table des contrats et ne peut pas être supprimé");
+
+                JTable tableEmployes =  (JTable) viewGarage.jScrollPaneEmployes.getViewport().getView();
+                DefaultTableModel model = (DefaultTableModel) tableEmployes.getModel();
+                model.removeRow(index);
+
+                System.out.println("Apres : " + instanceGarage.getEmployes());
+            }
+            dialog.dispose();
+        }
+        catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppresion", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void onSupprimerEmpSelect()
+    {
+        try {
+            JTable tableEmployes =  (JTable) viewGarage.jScrollPaneEmployes.getViewport().getView();
+
+            if(tableEmployes.getSelectedRow() == -1) throw new Exception("veuillez sélectionner un employé à supprimer");
+
+            System.out.println("Avant : " + instanceGarage.getEmployes());
+
+            if(instanceGarage.VerifieContratsEmploye(tableEmployes.getSelectedRow()) == 1)
+                throw new Exception("cet employé existe dans la table des contrats et ne peut pas être supprimé");
+
+            instanceGarage.supprimeEmployeParIndice(tableEmployes.getSelectedRow());
+
+            DefaultTableModel model = (DefaultTableModel) tableEmployes.getModel();
+            model.removeRow(tableEmployes.getSelectedRow());
+
+            System.out.println("Apres : " + instanceGarage.getEmployes());
+        }
+        catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppresion", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void onNouveauClient()
@@ -401,7 +485,79 @@ public class Controleur extends WindowAdapter implements ActionListener
         if (dialog.isOk())
         {
             System.out.println("Client : " + dialog.getNom() + " - " + dialog.getPrenom() + " - " + dialog.getGsm());
+
+            instanceGarage.ajouteClient(dialog.getNom(),dialog.getPrenom(),dialog.getGsm());
+
+            JTable tableClients =  (JTable) viewGarage.jScrollPaneClients.getViewport().getView();
+            DefaultTableModel model = (DefaultTableModel) tableClients.getModel();
+
+            Vector ligne = new Vector();
+            ligne.add(Integer.valueOf(Personne.numCourant));
+            ligne.add(dialog.getNom());
+            ligne.add(dialog.getPrenom());
+            ligne.add(dialog.getGsm());
+            model.addRow(ligne);
+
+            viewGarage.jScrollPaneClients.setViewportView(tableClients);
+
+            //System.out.println(instanceGarage.getClients());
         }
         dialog.dispose();
+    }
+
+    private void onSupprimerCliParNum()
+    {
+        try {
+            JDialogSupprimerParNumero dialog = new JDialogSupprimerParNumero();
+            dialog.pack();
+            dialog.setTitle("Suppresion Client");
+            dialog.setVisible(true);
+            if (dialog.isOk())
+            {
+                System.out.println("Numero Client a Supprimer: " + dialog.getNumero());
+
+                System.out.println("Avant : " + instanceGarage.getClients());
+
+                int index = instanceGarage.supprimeClientParNumero(dialog.getNumero());
+
+                if(index == -3) throw new Exception("il n'y a actuellement aucun client");
+                if(index == -1) throw new Exception("client avec ce numéro n'existe pas");
+                if(index == -2) throw new Exception("cet client existe dans la table des contrats et ne peut pas être supprimé");
+
+                JTable tableClients =  (JTable) viewGarage.jScrollPaneClients.getViewport().getView();
+                DefaultTableModel model = (DefaultTableModel) tableClients.getModel();
+                model.removeRow(index);
+
+                System.out.println("Apres : " + instanceGarage.getClients());
+            }
+            dialog.dispose();
+        }
+        catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppresion", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void onSupprimerCliSelect()
+    {
+        try {
+            JTable tableClients =  (JTable) viewGarage.jScrollPaneClients.getViewport().getView();
+
+            if(tableClients.getSelectedRow() == -1) throw new Exception("veuillez sélectionner un client à supprimer");
+
+            System.out.println("Avant : " + instanceGarage.getClients());
+
+            if(instanceGarage.VerifieContratsClient(tableClients.getSelectedRow()) == 1)
+                throw new Exception("ce client ne peut pas être supprimé car il existe dans la table des contrats");
+
+            instanceGarage.supprimeClientParIndice(tableClients.getSelectedRow());
+
+            DefaultTableModel model = (DefaultTableModel) tableClients.getModel();
+            model.removeRow(tableClients.getSelectedRow());
+
+            System.out.println("Apres : " + instanceGarage.getClients());
+        }
+        catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppresion", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

@@ -148,18 +148,27 @@ public class Garage {
         clients.remove(ind);
     }
 
-    public void supprimeClientParNumero(int num)
+    public int supprimeClientParNumero(int num)
     {
-        int i;
+        int i = 0;
 
-        for(i = 0;i < clients.size() && clients.get(i).getNumero() != num;i++);
+        if(clients.size() == 0) return -3;
 
-        if(clients.get(i).getNumero() == num)
-        {
-            int veri = VerifieContratsClient(i);
-            if(veri == 0) clients.remove(i);
+        for (Client cli: clients) {
+            if(cli.getNumero() == num)
+            {
+                int veri = VerifieContratsClient(i);
+                if(veri == 0)
+                {
+                    clients.remove(i);
+                    return i;
+                }
+                else return -2;
+            }
+            i++;
         }
-        else return;
+
+        return -1;
     }
 
     public int VerifieContratsClient(int ind)
@@ -198,18 +207,27 @@ public class Garage {
         employes.remove(ind);
     }
 
-    public void supprimeEmployeParNumero(int num)
+    public int supprimeEmployeParNumero(int num)
     {
-        int i;
+        int i = 0;
 
-        for(i = 0;i < employes.size() && employes.get(i).getNumero() != num;i++);
+        if(employes.size() == 0) return -3;
 
-        if(employes.get(i).getNumero() == num)
-        {
-            int veri = VerifieContratsEmploye(i);
-            if(veri == 0) employes.remove(i);
+        for (Employe emp: employes) {
+            if(emp.getNumero() == num)
+            {
+                int veri = VerifieContratsEmploye(i);
+                if(veri == 0)
+                {
+                    employes.remove(i);
+                    return i;
+                }
+                else return -2;
+            }
+            i++;
         }
-        else return;
+
+        return -1;
     }
 
     public int VerifieContratsEmploye(int ind)

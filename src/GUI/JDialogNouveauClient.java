@@ -21,6 +21,7 @@ public class JDialogNouveauClient extends JDialog {
     {
         super();
         setContentPane(contentPane);
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         setModal(true);
         getRootPane().setDefaultButton(ButtonCreer);
         setTitle("Nouveau Client...");
