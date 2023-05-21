@@ -1,9 +1,6 @@
 package Controller;
 
-import GUI.JDialogLogin;
-import GUI.JDialogNouveauModele;
-import GUI.JDialogNouvelleOption;
-import GUI.JFrameGarage;
+import GUI.*;
 import Modele.Garage;
 import Garage.*;
 
@@ -77,6 +74,12 @@ public class Controleur extends WindowAdapter implements ActionListener
         }
         if(e.getActionCommand().equals("Ouvrir Projet")){
             onOuvrirProjet();
+        }
+        if(e.getActionCommand().equals("Nouveau Employe")){
+            onNouveauEmploye();
+        }
+        if(e.getActionCommand().equals("Nouveau Client")){
+            onNouveauClient();
         }
     }
 
@@ -295,7 +298,7 @@ public class Controleur extends WindowAdapter implements ActionListener
             String FichierNom = "Fichiers/" + ProjetNom + ".car";
             instanceGarage.SaveProjetEnCours(FichierNom);
 
-            System.out.println(instanceGarage.getProjetEnCours().toString());
+            //System.out.println(instanceGarage.getProjetEnCours().toString());
         }
         catch (FileNotFoundException e)
         {
@@ -359,7 +362,7 @@ public class Controleur extends WindowAdapter implements ActionListener
 
             viewGarage.textFieldPrixAvecOptions.setText(String.valueOf(prixtotal));
 
-            System.out.println(instanceGarage.getProjetEnCours().toString());
+            //System.out.println(instanceGarage.getProjetEnCours().toString());
         }
         catch (FileNotFoundException e)
         {
@@ -376,5 +379,29 @@ public class Controleur extends WindowAdapter implements ActionListener
         catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void onNouveauEmploye()
+    {
+        JDialogNouveauEmploye dialog = new JDialogNouveauEmploye();
+        dialog.pack();
+        dialog.setVisible(true);
+        if (dialog.isOk())
+        {
+            System.out.println("Employe: " + dialog.getNom() + " - " + dialog.getPrenom() + " - " + dialog.getLogin() + " - " + dialog.getFonction());
+        }
+        dialog.dispose();
+    }
+
+    private void onNouveauClient()
+    {
+        JDialogNouveauClient dialog = new JDialogNouveauClient();
+        dialog.pack();
+        dialog.setVisible(true);
+        if (dialog.isOk())
+        {
+            System.out.println("Client : " + dialog.getNom() + " - " + dialog.getPrenom() + " - " + dialog.getGsm());
+        }
+        dialog.dispose();
     }
 }

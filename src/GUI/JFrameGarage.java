@@ -47,6 +47,9 @@ public class JFrameGarage extends JFrame
     private JMenuItem menuItemLogin;
     private JMenuItem menuItemNouveauModele;
     private JMenuItem menuItemNouvelleOption;
+    private JMenuItem menuItemNouveauEmploye;
+    private JMenuItem menuItemNouveauClient;
+
     private JTable tableEmployes;
     private JTable tableClients;
 
@@ -84,8 +87,14 @@ public class JFrameGarage extends JFrame
 
         JMenu menuEmployes = new JMenu("Employés");
         menuBar.add(menuEmployes);
+        menuItemNouveauEmploye = new JMenuItem("Nouveau Employe");
+        menuEmployes.add(menuItemNouveauEmploye);
+
         JMenu menuClients = new JMenu("Clients");
         menuBar.add(menuClients);
+        menuItemNouveauClient = new JMenuItem("Nouveau Client");
+        menuClients.add(menuItemNouveauClient);
+
         JMenu menuVoiture = new JMenu("Voiture");
         menuBar.add(menuVoiture);
         menuItemNouveauModele = new JMenuItem("Nouveau modèle");
@@ -146,12 +155,21 @@ public class JFrameGarage extends JFrame
 
     public void setControleur(Controleur c)
     {
+        //connexion
         menuItemQuitter.addActionListener(c);
         menuItemLogin.addActionListener(c);
 
+        //voiture
         menuItemNouveauModele.addActionListener(c);
         menuItemNouvelleOption.addActionListener(c);
 
+        //employe
+        menuItemNouveauEmploye.addActionListener(c);
+
+        //client
+        menuItemNouveauClient.addActionListener(c);
+
+        //les different bouton pour les options/modeles
         buttonChoisirModele.addActionListener(c);
         buttonChoisirOption.addActionListener(c);
         buttonNouveauProjet.addActionListener(c);
