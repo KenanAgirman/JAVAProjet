@@ -16,17 +16,17 @@ import java.util.Vector;
 public class JFrameGarage extends JFrame
 {
     private JPanel mainPanel;
-    private JButton nouveauContratButton;
-    private JButton supprimerContratButton;
-    private JButton visualiserVoitureButton;
+    public JButton nouveauContratButton;
+    public JButton supprimerContratButton;
+    public JButton visualiserVoitureButton;
     private JTable tableContrats;
     public JScrollPane jScrollPaneEmployes;
     public JScrollPane jScrollPaneClients;
     public JLabel labelImage;
     public JComboBox comboBoxModelesDisponibles;
-    private JButton buttonChoisirModele;
+    public JButton buttonChoisirModele;
     public JComboBox comboBoxOptionsDisponibles;
-    private JButton buttonChoisirOption;
+    public JButton buttonChoisirOption;
     private JScrollPane jScrollPaneOptionsChoisies;
     public JTable tableOptionsChoisies;
     public JTextField textFieldNomProjet;
@@ -38,13 +38,19 @@ public class JFrameGarage extends JFrame
     public JRadioButton radioButtonElectrique;
     public JRadioButton radioButtonHybride;
     public JButton buttonSupprimerOption;
-    private JButton buttonAccorderReduction;
+    public JButton buttonAccorderReduction;
     public JTextField textFieldPrixAvecOptions;
-    private JButton buttonNouveauProjet;
-    private JButton buttonOuvrirProjet;
-    private JButton buttonEnregistrerProjet;
+    public JButton buttonNouveauProjet;
+    public JButton buttonOuvrirProjet;
+    public JButton buttonEnregistrerProjet;
+
+    public JMenu menuEmployes;
+    public JMenu menuClients;
+    public JMenu menuVoiture;
     private JMenuItem menuItemQuitter;
-    private JMenuItem menuItemLogin;
+    public JMenuItem menuItemLogin;
+    public JMenuItem menuItemLogout;
+    public JMenuItem menuItemResetMotDePasse;
     private JMenuItem menuItemNouveauModele;
     private JMenuItem menuItemNouvelleOption;
     private JMenuItem menuItemNouveauEmploye;
@@ -79,16 +85,16 @@ public class JFrameGarage extends JFrame
         menuBar.add(menuConnexion);
         menuItemLogin = new JMenuItem("Login");
         menuConnexion.add(menuItemLogin);
-        JMenuItem menuItemLogout = new JMenuItem("Logout");
+        menuItemLogout = new JMenuItem("Logout");
         menuConnexion.add(menuItemLogout);
         menuConnexion.addSeparator();
-        JMenuItem menuItemResetMotDePasse = new JMenuItem("Reset mot de passe");
+        menuItemResetMotDePasse = new JMenuItem("Reset mot de passe");
         menuConnexion.add(menuItemResetMotDePasse);
         menuConnexion.addSeparator();
         menuItemQuitter = new JMenuItem("Quitter");
         menuConnexion.add(menuItemQuitter);
 
-        JMenu menuEmployes = new JMenu("Employés");
+        menuEmployes = new JMenu("Employés");
         menuBar.add(menuEmployes);
         menuItemNouveauEmploye = new JMenuItem("Nouveau Employe");
         menuEmployes.add(menuItemNouveauEmploye);
@@ -97,7 +103,7 @@ public class JFrameGarage extends JFrame
         menuItemSupprimerEmployeParSelect = new JMenuItem("Supprimer employe selectionner");
         menuEmployes.add(menuItemSupprimerEmployeParSelect);
 
-        JMenu menuClients = new JMenu("Clients");
+        menuClients = new JMenu("Clients");
         menuBar.add(menuClients);
         menuItemNouveauClient = new JMenuItem("Nouveau Client");
         menuClients.add(menuItemNouveauClient);
@@ -106,7 +112,7 @@ public class JFrameGarage extends JFrame
         menuItemSupprimerClientParSelect = new JMenuItem("Supprimer client selectionner");
         menuClients.add(menuItemSupprimerClientParSelect);
 
-        JMenu menuVoiture = new JMenu("Voiture");
+        menuVoiture = new JMenu("Voiture");
         menuBar.add(menuVoiture);
         menuItemNouveauModele = new JMenuItem("Nouveau modèle");
         menuVoiture.add(menuItemNouveauModele);
@@ -161,6 +167,8 @@ public class JFrameGarage extends JFrame
         //connexion
         menuItemQuitter.addActionListener(c);
         menuItemLogin.addActionListener(c);
+        menuItemLogout.addActionListener(c);
+        menuItemResetMotDePasse.addActionListener(c);
 
         //voiture
         menuItemNouveauModele.addActionListener(c);

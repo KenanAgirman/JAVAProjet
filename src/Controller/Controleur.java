@@ -72,8 +72,8 @@ public class Controleur extends WindowAdapter implements ActionListener
 
         instanceGarage.LoadProperties("Fichiers/passwords.properties");
 
-//        this.viewGarage.buttonSupprimerOption.setEnabled(false);
-//        this.viewGarage.textFieldNomProjet.setEnabled(false);
+        //Etat initiale
+        PasLogger();
 
         //instanceGarage.prop.list(System.out);
     }
@@ -85,6 +85,12 @@ public class Controleur extends WindowAdapter implements ActionListener
         }
         if(e.getActionCommand().equals("Login")) {
             onLogin();
+        }
+        if(e.getActionCommand().equals("Logout")){
+            onLogout();
+        }
+        if(e.getActionCommand().equals("Reset mot de passe")){
+            onResetMotDePasse();
         }
         if(e.getActionCommand().equals("Nouveau modèle")){
             onNouveauModele();
@@ -165,25 +171,52 @@ public class Controleur extends WindowAdapter implements ActionListener
 
                     while (i < instanceGarage.getEmployes().size() && !emp.getLogin().equals(dialog.getLogin()))
                     {
-                        emp = instanceGarage.getEmployes().get(i);
                         i++;
+                        emp = instanceGarage.getEmployes().get(i);
                     }
 
                     if(instanceGarage.prop.getProperty(dialog.getLogin()).isEmpty())
                     {
-                        System.out.println("nouveau");
+                        //System.out.println("nouveau");
 
                         instanceGarage.EmpLogger = emp;
+
+                        JOptionPane.showMessageDialog(null, "étant donné que ce compte n'a pas de mot de passe, le mot de passe que vous avez entré a été défini comme mot de passe pour le compte", "Mot de Passe", JOptionPane.INFORMATION_MESSAGE);
+
+                        instanceGarage.EmpLogger.setMotDePasse(dialog.getMotDePasse());
+                        instanceGarage.prop.setProperty(dialog.getLogin(), dialog.getMotDePasse());
+
+                        if(instanceGarage.EmpLogger.getFonction().equals("Administratif"))
+                        {
+                            JOptionPane.showMessageDialog(null, "Vous avez été connecté avec succès en tant qu'administrateur", "Succes", JOptionPane.INFORMATION_MESSAGE);
+                            AdminLogger();
+                        }
+                        else
+                        {
+                            JOptionPane.showMessageDialog(null, "Vous avez été connecté avec succès en tant que vendeur", "Succes", JOptionPane.INFORMATION_MESSAGE);
+                            VendeurLogger();
+                        }
                     }
                     else if(!instanceGarage.prop.getProperty(dialog.getLogin()).equals(dialog.getMotDePasse())) throw new Exception("Mot de passe incorrect");
                     else
                     {
-                        System.out.println("logger");
+                        //System.out.println("logger");
 
                         instanceGarage.EmpLogger = emp;
+
+                        if(instanceGarage.EmpLogger.getFonction().equals("Administratif"))
+                        {
+                            JOptionPane.showMessageDialog(null, "Vous avez été connecté avec succès en tant qu'administrateur", "Succes", JOptionPane.INFORMATION_MESSAGE);
+                            AdminLogger();
+                        }
+                        else
+                        {
+                            JOptionPane.showMessageDialog(null, "Vous avez été connecté avec succès en tant que vendeur", "Succes", JOptionPane.INFORMATION_MESSAGE);
+                            VendeurLogger();
+                        }
                     }
 
-                    System.out.println(instanceGarage.EmpLogger);
+                    //System.out.println(instanceGarage.EmpLogger);
                 }
                 else throw new Exception("Cet utilisateur n'existe pas");
             }
@@ -191,6 +224,23 @@ public class Controleur extends WindowAdapter implements ActionListener
         catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void onLogout()
+    {
+        instanceGarage.EmpLogger = null;
+
+        //System.out.println(instanceGarage.EmpLogger);
+
+        PasLogger();
+    }
+
+    private void onResetMotDePasse()
+    {
+        instanceGarage.EmpLogger.setMotDePasse("");
+        instanceGarage.prop.setProperty(instanceGarage.EmpLogger.getLogin(), "");
+
+        JOptionPane.showMessageDialog(null, "votre mot de passe a été réinitialisé", "Mot de Passe", JOptionPane.INFORMATION_MESSAGE);
     }
 
     //----------------------------------------------------------------------------------
@@ -670,5 +720,108 @@ public class Controleur extends WindowAdapter implements ActionListener
         catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppresion", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+
+    //----------------------------------------------------------------------------------
+    //---------		Les differents etats de logger
+    //----------------------------------------------------------------------------------
+
+    private void PasLogger()
+    {
+        //projet
+        viewGarage.textFieldNomProjet.setEnabled(false);
+        viewGarage.textFieldModele.setEnabled(false);
+        viewGarage.textFieldPuissance.setEnabled(false);
+        viewGarage.textFieldPrixDeBase.setEnabled(false);
+        viewGarage.radioButtonHybride.setEnabled(false);
+        viewGarage.radioButtonDiesel.setEnabled(false);
+        viewGarage.radioButtonElectrique.setEnabled(false);
+        viewGarage.radioButtonEssence.setEnabled(false);
+
+        viewGarage.buttonSupprimerOption.setEnabled(false);
+        viewGarage.buttonAccorderReduction.setEnabled(false);
+        viewGarage.textFieldPrixAvecOptions.setEnabled(false);
+
+        viewGarage.buttonOuvrirProjet.setEnabled(false);
+        viewGarage.buttonEnregistrerProjet.setEnabled(false);
+        viewGarage.buttonNouveauProjet.setEnabled(false);
+
+        //modeles et options
+        viewGarage.comboBoxModelesDisponibles.setEnabled(false);
+        viewGarage.comboBoxOptionsDisponibles.setEnabled(false);
+        viewGarage.buttonChoisirOption.setEnabled(false);
+        viewGarage.buttonChoisirModele.setEnabled(false);
+
+        //contrat
+        viewGarage.nouveauContratButton.setEnabled(false);
+        viewGarage.supprimerContratButton.setEnabled(false);
+        viewGarage.visualiserVoitureButton.setEnabled(false);
+
+        //les menus
+        viewGarage.menuEmployes.setEnabled(false);
+        viewGarage.menuClients.setEnabled(false);
+        viewGarage.menuVoiture.setEnabled(false);
+
+        //menu connexion
+        viewGarage.menuItemLogout.setEnabled(false);
+        viewGarage.menuItemResetMotDePasse.setEnabled(false);
+        viewGarage.menuItemLogin.setEnabled(true);
+    }
+
+    private void AdminLogger()
+    {
+        //menu connexion
+        viewGarage.menuItemLogout.setEnabled(true);
+        viewGarage.menuItemResetMotDePasse.setEnabled(true);
+        viewGarage.menuItemLogin.setEnabled(false);
+
+        //les menus
+        viewGarage.menuEmployes.setEnabled(true);
+
+        //contrat
+        viewGarage.supprimerContratButton.setEnabled(true);
+        viewGarage.visualiserVoitureButton.setEnabled(true);
+    }
+
+    private void VendeurLogger()
+    {
+        //projet
+        viewGarage.textFieldNomProjet.setEnabled(true);
+        viewGarage.textFieldModele.setEnabled(true);
+        viewGarage.textFieldPuissance.setEnabled(true);
+        viewGarage.textFieldPrixDeBase.setEnabled(true);
+        viewGarage.radioButtonHybride.setEnabled(true);
+        viewGarage.radioButtonDiesel.setEnabled(true);
+        viewGarage.radioButtonElectrique.setEnabled(true);
+        viewGarage.radioButtonEssence.setEnabled(true);
+
+        viewGarage.buttonSupprimerOption.setEnabled(true);
+        viewGarage.buttonAccorderReduction.setEnabled(true);
+        viewGarage.textFieldPrixAvecOptions.setEnabled(true);
+
+        viewGarage.buttonOuvrirProjet.setEnabled(true);
+        viewGarage.buttonEnregistrerProjet.setEnabled(true);
+        viewGarage.buttonNouveauProjet.setEnabled(true);
+
+        //modeles et options
+        viewGarage.comboBoxModelesDisponibles.setEnabled(true);
+        viewGarage.comboBoxOptionsDisponibles.setEnabled(true);
+        viewGarage.buttonChoisirOption.setEnabled(true);
+        viewGarage.buttonChoisirModele.setEnabled(true);
+
+        //contrat
+        viewGarage.nouveauContratButton.setEnabled(true);
+        viewGarage.supprimerContratButton.setEnabled(true);
+        viewGarage.visualiserVoitureButton.setEnabled(true);
+
+        //les menus
+        viewGarage.menuClients.setEnabled(true);
+        viewGarage.menuVoiture.setEnabled(true);
+
+        //menu connexion
+        viewGarage.menuItemLogout.setEnabled(true);
+        viewGarage.menuItemResetMotDePasse.setEnabled(true);
+        viewGarage.menuItemLogin.setEnabled(false);
     }
 }

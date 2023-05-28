@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 public class JDialogLogin extends JDialog
 {
@@ -36,7 +37,15 @@ public class JDialogLogin extends JDialog
                     else login = textFieldLogin.getText();
 
                     if(textFieldMotDePasse.getText().isEmpty()) throw new Exception("veuillez entrer une valeur valide pour le mot de passe");
-                    else motDePasse = textFieldMotDePasse.getText();
+                    else
+                    {
+                        if(!Pattern.matches("^.{6,}$", textFieldMotDePasse.getText())) throw new Exception("mot de passe doit comporter d'une taille de 6 au moins");
+                        else
+                        {
+                            if(!Pattern.matches("[0-9]{1,}[a-zA-Z]{1,}|[a-zA-Z]{1,}[0-9]{1,}", textFieldMotDePasse.getText())) throw new Exception("le mot de passe doit avoir 1 chiffre et 1 lettre");
+                            else motDePasse = textFieldMotDePasse.getText();
+                        }
+                    }
 
                     ok = true;
                     setVisible(false);
