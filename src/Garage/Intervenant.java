@@ -1,6 +1,8 @@
 package Garage;
 
-abstract class Intervenant extends Personne implements estIdentifiable {
+import java.io.Serializable;
+
+abstract class Intervenant extends Personne implements estIdentifiable, Serializable {
     private int numero;
 
     public Intervenant(){

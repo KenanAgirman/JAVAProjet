@@ -31,10 +31,19 @@ public class JDialogLogin extends JDialog
         buttonOk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                login = textFieldLogin.getText();
-                motDePasse = textFieldLogin.getText();
-                ok = true;
-                setVisible(false);
+                try {
+                    if(textFieldLogin.getText().isEmpty()) throw new Exception("veuillez entrer une valeur valide pour le login");
+                    else login = textFieldLogin.getText();
+
+                    if(textFieldMotDePasse.getText().isEmpty()) throw new Exception("veuillez entrer une valeur valide pour le mot de passe");
+                    else motDePasse = textFieldMotDePasse.getText();
+
+                    ok = true;
+                    setVisible(false);
+                }
+                catch (Exception exception) {
+                    JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Client", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         buttonAnnuler.addActionListener(new ActionListener() {

@@ -3,6 +3,7 @@ import Garage.*;
 
 import java.io.*;
 import java.util.LinkedList;
+import java.util.Properties;
 
 public class Garage {
     private LinkedList<Employe> employes;
@@ -14,6 +15,7 @@ public class Garage {
     private static Garage instance = null;
     private static Voiture projetEnCours = null;
     public static Employe EmpLogger = null;
+    public static Properties prop;
 
     private Garage(){
        this.clients = new LinkedList<>();
@@ -204,6 +206,7 @@ public class Garage {
 
     public void supprimeEmployeParIndice(int ind)
     {
+        prop.remove(employes.get(ind).getLogin());
         employes.remove(ind);
     }
 
@@ -219,6 +222,7 @@ public class Garage {
                 int veri = VerifieContratsEmploye(i);
                 if(veri == 0)
                 {
+                    prop.remove(employes.get(i).getLogin());
                     employes.remove(i);
                     return i;
                 }
@@ -273,7 +277,7 @@ public class Garage {
     }
 
     //----------------------------------------------------------------------------------
-    //---------		Flux
+    //---------		Flux modeles/options
     //----------------------------------------------------------------------------------
 
     public void importeModeles(String nomFichier) {
@@ -359,6 +363,10 @@ public class Garage {
         }
     }
 
+    //----------------------------------------------------------------------------------
+    //---------		Flux pour les projetEncour
+    //----------------------------------------------------------------------------------
+
     public void SaveProjetEnCours(String nomFichier) throws FileNotFoundException, IOException
     {
         FileOutputStream fos = new FileOutputStream(nomFichier);
@@ -374,6 +382,88 @@ public class Garage {
         ObjectInputStream ois = new ObjectInputStream(fis);
 
         projetEnCours = (Voiture) ois.readObject();
+    }
+
+
+    //----------------------------------------------------------------------------------
+    //---------		Flux pour les properties
+    //----------------------------------------------------------------------------------
+
+    public void SaveProperties(String nomFichier)
+    {
+        try (OutputStream output = new FileOutputStream(nomFichier)) {
+            prop.store(output, "Informations de connexion et de mot de passe");
+            System.out.println("Properties sauver sur le fichier!");
+        } catch (IOException e) {
+            System.err.println("Erreur pendant le enregistrement sur le fichier pour les properties: " + e.getMessage());
+        }
+    }
+
+    public void LoadProperties(String nomFichier)
+    {
+        prop = new Properties();
+
+        try (InputStream input = new FileInputStream(nomFichier)) {
+            prop.load(input);
+            System.out.println("Propriétés chargées à partir du fichier.!");
+        } catch (IOException e) {
+            System.out.println("Erreur de lecture du fichier: " + e.getMessage());
+            // Fichier ne existe pas alors on va creer une par defaut
+            prop = new Properties();
+            prop.setProperty("admin", "admin1");
+        }
+    }
+
+    //----------------------------------------------------------------------------------
+    //---------		Flux pour Garage
+    //----------------------------------------------------------------------------------
+
+    public void SaveGarage(String nomFichier)
+    {
+        try {
+            FileOutputStream fos = new FileOutputStream(nomFichier);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(Personne.numCourant);
+
+            oos.writeObject(employes);
+            oos.writeObject(clients);
+
+            oos.flush();
+        } catch (FileNotFoundException e) {
+            System.err.println("Fichier non trouve!");
+        } catch (IOException e) {
+            System.err.println("Erreur de ecriture dans le fichier: " + e.getMessage());
+        }
+    }
+
+    public void LoadGarage(String nomFichier)
+    {
+        try
+        {
+            FileInputStream fis = new FileInputStream(nomFichier);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            Personne.numCourant = (Integer) ois.readObject();
+
+            employes = (LinkedList<Employe>) ois.readObject();
+            clients = (LinkedList<Client>) ois.readObject();
+        } catch (FileNotFoundException e) {
+            System.out.println("Fichier non trouve!");
+
+            employes = new LinkedList<>();
+
+            Personne.numCourant++;
+
+            Employe admin = new Employe("admin", "admin", Personne.numCourant, "admin", "Administratif");
+            admin.setMotDePasse("admin1");
+
+            employes.add(admin);
+
+            clients = new LinkedList<>();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Erreur de ecriture dans le fichier: " + e.getMessage());
+        }
     }
 
 }

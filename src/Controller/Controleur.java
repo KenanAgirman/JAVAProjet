@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Vector;
 
 public class Controleur extends WindowAdapter implements ActionListener
@@ -23,6 +24,36 @@ public class Controleur extends WindowAdapter implements ActionListener
     public Controleur(Garage instanceGarage, JFrameGarage viewGarage) {
         this.instanceGarage = instanceGarage;
         this.viewGarage = viewGarage;
+
+        //Loader les employes et clients
+        this.instanceGarage.LoadGarage("Fichiers/Garage.data");
+
+        //pour l'interface
+
+        //employe
+        DefaultTableModel modelEmp = (DefaultTableModel) this.viewGarage.tableEmployes.getModel();
+
+        for (Employe emp:this.instanceGarage.getEmployes()) {
+            Vector ligne = new Vector();
+            ligne.add(emp.getNumero());
+            ligne.add(emp.getNom());
+            ligne.add(emp.getPrenom());
+            ligne.add(emp.getFonction());
+            modelEmp.addRow(ligne);
+        }
+
+        //client
+
+        DefaultTableModel modelCli = (DefaultTableModel) this.viewGarage.tableClients.getModel();
+
+        for (Client cli:this.instanceGarage.getClients()) {
+            Vector ligne = new Vector();
+            ligne.add(cli.getNumero());
+            ligne.add(cli.getNom());
+            ligne.add(cli.getPrenom());
+            ligne.add(cli.getGsm());
+            modelCli.addRow(ligne);
+        }
 
         //importer les modeles et options
         this.instanceGarage.importeOptions("Fichiers/Options.csv");
@@ -38,6 +69,13 @@ public class Controleur extends WindowAdapter implements ActionListener
         for (Modele mod: this.instanceGarage.getModeles()) {
             this.viewGarage.comboBoxModelesDisponibles.addItem(mod);
         }
+
+        instanceGarage.LoadProperties("Fichiers/passwords.properties");
+
+//        this.viewGarage.buttonSupprimerOption.setEnabled(false);
+//        this.viewGarage.textFieldNomProjet.setEnabled(false);
+
+        //instanceGarage.prop.list(System.out);
     }
 
     @Override
@@ -104,14 +142,60 @@ public class Controleur extends WindowAdapter implements ActionListener
     {
         int ret = JOptionPane.showConfirmDialog(null,"Êtes-vous certain de vouloir quitter ?");
         if (ret == JOptionPane.YES_OPTION)
+        {
+            instanceGarage.SaveGarage("Fichiers/Garage.data");
+            instanceGarage.SaveProperties("Fichiers/passwords.properties");
             System.exit(0);
+        }
     }
 
     private void onLogin()
     {
-        JDialogLogin dialog = new JDialogLogin(null,true,"Entrée en session...");
-        dialog.setVisible(true);
+        try
+        {
+            JDialogLogin dialog = new JDialogLogin(null,true,"Entrée en session...");
+            dialog.setVisible(true);
+
+            if(dialog.getLogin() != null)
+            {
+                if(instanceGarage.prop.containsKey(dialog.getLogin()))
+                {
+                    int i = 0;
+                    Employe emp = instanceGarage.getEmployes().get(i);
+
+                    while (i < instanceGarage.getEmployes().size() && !emp.getLogin().equals(dialog.getLogin()))
+                    {
+                        emp = instanceGarage.getEmployes().get(i);
+                        i++;
+                    }
+
+                    if(instanceGarage.prop.getProperty(dialog.getLogin()).isEmpty())
+                    {
+                        System.out.println("nouveau");
+
+                        instanceGarage.EmpLogger = emp;
+                    }
+                    else if(!instanceGarage.prop.getProperty(dialog.getLogin()).equals(dialog.getMotDePasse())) throw new Exception("Mot de passe incorrect");
+                    else
+                    {
+                        System.out.println("logger");
+
+                        instanceGarage.EmpLogger = emp;
+                    }
+
+                    System.out.println(instanceGarage.EmpLogger);
+                }
+                else throw new Exception("Cet utilisateur n'existe pas");
+            }
+        }
+        catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
     }
+
+    //----------------------------------------------------------------------------------
+    //---------		Fonctions pour les modeles/options et aussi pour le projet en cours
+    //----------------------------------------------------------------------------------
 
     private void onNouveauModele()
     {
@@ -291,6 +375,10 @@ public class Controleur extends WindowAdapter implements ActionListener
         }
     }
 
+    //---------------------------------------------------------------------------------------------------
+    //---------		Flux Save/Load pour le projet (les fonctions du flux se trouve dans le garage modele)
+    //---------------------------------------------------------------------------------------------------
+
     private void onEnregistrerProjet()
     {
         try {
@@ -393,6 +481,10 @@ public class Controleur extends WindowAdapter implements ActionListener
         }
     }
 
+    //----------------------------------------------------------------------------------
+    //---------		Fonctions pour les employes
+    //----------------------------------------------------------------------------------
+
     private void onNouveauEmploye()
     {
         JDialogNouveauEmploye dialog = new JDialogNouveauEmploye();
@@ -402,19 +494,30 @@ public class Controleur extends WindowAdapter implements ActionListener
         {
             System.out.println("Employe: " + dialog.getNom() + " - " + dialog.getPrenom() + " - " + dialog.getLogin() + " - " + dialog.getFonction());
 
-            instanceGarage.ajouteEmploye(dialog.getNom(),dialog.getPrenom(),dialog.getLogin(),dialog.getFonction());
+            try {
+                for (Employe emp:instanceGarage.getEmployes()) {
+                    if(emp.getLogin().equals(dialog.getLogin())) throw new Exception("ce login existe déjà !");
+                }
 
-            JTable tableEmployes =  (JTable) viewGarage.jScrollPaneEmployes.getViewport().getView();
-            DefaultTableModel model = (DefaultTableModel) tableEmployes.getModel();
+                instanceGarage.ajouteEmploye(dialog.getNom(),dialog.getPrenom(),dialog.getLogin(),dialog.getFonction());
+                instanceGarage.prop.setProperty(dialog.getNom(), "");
 
-            Vector ligne = new Vector();
-            ligne.add(Integer.valueOf(Personne.numCourant));
-            ligne.add(dialog.getNom());
-            ligne.add(dialog.getPrenom());
-            ligne.add(dialog.getFonction());
-            model.addRow(ligne);
+                JTable tableEmployes =  (JTable) viewGarage.jScrollPaneEmployes.getViewport().getView();
+                DefaultTableModel model = (DefaultTableModel) tableEmployes.getModel();
 
-            viewGarage.jScrollPaneEmployes.setViewportView(tableEmployes);
+                Vector ligne = new Vector();
+                ligne.add(Integer.valueOf(Personne.numCourant));
+                ligne.add(dialog.getNom());
+                ligne.add(dialog.getPrenom());
+                ligne.add(dialog.getFonction());
+                model.addRow(ligne);
+
+                viewGarage.jScrollPaneEmployes.setViewportView(tableEmployes);
+            }
+            catch (Exception e)
+            {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Erreur Ajout client", JOptionPane.ERROR_MESSAGE);
+            }
 
             //System.out.println(instanceGarage.getEmployes());
         }
@@ -445,6 +548,8 @@ public class Controleur extends WindowAdapter implements ActionListener
                 model.removeRow(index);
 
                 System.out.println("Apres : " + instanceGarage.getEmployes());
+
+                instanceGarage.prop.list(System.out);
             }
             dialog.dispose();
         }
@@ -471,11 +576,17 @@ public class Controleur extends WindowAdapter implements ActionListener
             model.removeRow(tableEmployes.getSelectedRow());
 
             System.out.println("Apres : " + instanceGarage.getEmployes());
+
+            instanceGarage.prop.list(System.out);
         }
         catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppresion", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    //----------------------------------------------------------------------------------
+    //---------		Fonctions pour les clients
+    //----------------------------------------------------------------------------------
 
     private void onNouveauClient()
     {

@@ -37,7 +37,7 @@ public class JFrameGarage extends JFrame
     public JRadioButton radioButtonDiesel;
     public JRadioButton radioButtonElectrique;
     public JRadioButton radioButtonHybride;
-    private JButton buttonSupprimerOption;
+    public JButton buttonSupprimerOption;
     private JButton buttonAccorderReduction;
     public JTextField textFieldPrixAvecOptions;
     private JButton buttonNouveauProjet;
@@ -54,15 +54,15 @@ public class JFrameGarage extends JFrame
     private JMenuItem menuItemSupprimerClientParNum;
     private JMenuItem menuItemSupprimerClientParSelect;
 
-    private JTable tableEmployes;
-    private JTable tableClients;
+    public JTable tableEmployes;
+    public JTable tableClients;
 
     public JFrameGarage()
     {
         //setSize(800,600);
         setTitle("Application Garage JAVA");
         setContentPane(mainPanel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -85,7 +85,6 @@ public class JFrameGarage extends JFrame
         JMenuItem menuItemResetMotDePasse = new JMenuItem("Reset mot de passe");
         menuConnexion.add(menuItemResetMotDePasse);
         menuConnexion.addSeparator();
-
         menuItemQuitter = new JMenuItem("Quitter");
         menuConnexion.add(menuItemQuitter);
 

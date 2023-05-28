@@ -1,6 +1,8 @@
 package Garage;
 
-public class Employe extends Intervenant{
+import java.io.Serializable;
+
+public class Employe extends Intervenant implements Serializable {
     private String login;
     private String motDePasse;
     private String fonction;

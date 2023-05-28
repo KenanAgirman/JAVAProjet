@@ -1,8 +1,9 @@
 package Garage;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Contrat implements estIdentifiable {
+public class Contrat implements estIdentifiable, Serializable {
     private int numero;
     private Employe vendeur;
     private Client client;

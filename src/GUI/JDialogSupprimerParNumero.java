@@ -42,7 +42,7 @@ public class JDialogSupprimerParNumero extends JDialog {
                     setVisible(false);
                 }
                 catch (Exception exception) {
-                    //JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppression", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppression", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

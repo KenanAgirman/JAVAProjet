@@ -1,6 +1,8 @@
 package Garage;
 
-public class Client extends Intervenant{
+import java.io.Serializable;
+
+public class Client extends Intervenant implements Serializable {
 
     private String gsm;
 
