@@ -1,6 +1,7 @@
 package Garage;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Contrat implements estIdentifiable, Serializable {
@@ -8,7 +9,7 @@ public class Contrat implements estIdentifiable, Serializable {
     private Employe vendeur;
     private Client client;
     private String voiture;
-    private Date datecontrat;
+    private Calendar datecontrat;
 
     public static int numCourantContrat = 0;
 
@@ -17,7 +18,7 @@ public class Contrat implements estIdentifiable, Serializable {
         this.vendeur = new Employe();
         this.client = new Client();
         this.voiture = "";
-        this.datecontrat = new Date();
+        this.datecontrat = Calendar.getInstance();
     }
 
     public Contrat(int numero, Employe vendeur, Client client, String voiture) {
@@ -25,7 +26,7 @@ public class Contrat implements estIdentifiable, Serializable {
         this.vendeur = vendeur;
         this.client = client;
         this.voiture = voiture;
-        this.datecontrat = new Date();
+        this.datecontrat = Calendar.getInstance();
     }
 
     public void setNumero(int numero) {
@@ -56,11 +57,11 @@ public class Contrat implements estIdentifiable, Serializable {
         this.voiture = voiture;
     }
 
-    public Date getDatecontrat() {
+    public Calendar getDatecontrat() {
         return datecontrat;
     }
 
-    public void setDatecontrat(Date datecontrat) {
+    public void setDatecontrat(Calendar datecontrat) {
         this.datecontrat = datecontrat;
     }
 
@@ -69,4 +70,14 @@ public class Contrat implements estIdentifiable, Serializable {
         return numero;
     }
 
+    @Override
+    public String toString() {
+        return "Contrat{" +
+                "numero=" + numero +
+                ", vendeur=" + vendeur +
+                ", client=" + client +
+                ", voiture='" + voiture + '\'' +
+                ", datecontrat=" + datecontrat.getTime() +
+                '}';
+    }
 }

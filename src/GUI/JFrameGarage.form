@@ -32,7 +32,6 @@
                 <constraints/>
                 <properties>
                   <horizontalAlignment value="0"/>
-                  <icon value="GUI/images/208.jpg"/>
                   <text value=""/>
                 </properties>
               </component>

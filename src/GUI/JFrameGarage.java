@@ -19,7 +19,7 @@ public class JFrameGarage extends JFrame
     public JButton nouveauContratButton;
     public JButton supprimerContratButton;
     public JButton visualiserVoitureButton;
-    private JTable tableContrats;
+    public JTable tableContrats;
     public JScrollPane jScrollPaneEmployes;
     public JScrollPane jScrollPaneClients;
     public JLabel labelImage;
@@ -143,7 +143,7 @@ public class JFrameGarage extends JFrame
 
         // Table des contrats
         tableModel = (DefaultTableModel) tableContrats.getModel();
-        String[] nomsColonnes3 = { "Num", "Vendeur", "Client", "Voiture"};
+        String[] nomsColonnes3 = { "Num", "Vendeur", "Client", "Voiture", "Date"};
         tableModel.setColumnIdentifiers(nomsColonnes3);
 
         // Table des options
@@ -160,6 +160,39 @@ public class JFrameGarage extends JFrame
         buttonSupprimerOption.setText("Supprimer Option");
         buttonEnregistrerProjet.setText("Enregistrer Projet");
         buttonOuvrirProjet.setText("Ouvrir Projet");
+
+        buttonSupprimerOption.setBackground(new Color(237, 43, 42));
+        buttonSupprimerOption.setForeground(Color.white);
+        buttonSupprimerOption.setFont(buttonSupprimerOption.getFont().deriveFont(Font.BOLD));
+        buttonAccorderReduction.setBackground(new Color(3, 201, 136));
+        buttonAccorderReduction.setForeground(Color.white);
+        buttonAccorderReduction.setFont(buttonAccorderReduction.getFont().deriveFont(Font.BOLD));
+
+        buttonChoisirModele.setBackground(new Color(32, 82, 149));
+        buttonChoisirModele.setForeground(Color.white);
+        buttonChoisirModele.setFont(buttonChoisirModele.getFont().deriveFont(Font.BOLD));
+        buttonChoisirOption.setBackground(new Color(32, 82, 149));
+        buttonChoisirOption.setForeground(Color.white);
+        buttonChoisirOption.setFont(buttonChoisirOption.getFont().deriveFont(Font.BOLD));
+        buttonNouveauProjet.setBackground(new Color(32, 82, 149));
+        buttonNouveauProjet.setForeground(Color.white);
+        buttonNouveauProjet.setFont(buttonNouveauProjet.getFont().deriveFont(Font.BOLD));
+        buttonEnregistrerProjet.setBackground(new Color(32, 82, 149));
+        buttonEnregistrerProjet.setForeground(Color.white);
+        buttonEnregistrerProjet.setFont(buttonEnregistrerProjet.getFont().deriveFont(Font.BOLD));
+        buttonOuvrirProjet.setBackground(new Color(32, 82, 149));
+        buttonOuvrirProjet.setForeground(Color.white);
+        buttonOuvrirProjet.setFont(buttonOuvrirProjet.getFont().deriveFont(Font.BOLD));
+
+        visualiserVoitureButton.setBackground(new Color(78, 49, 170));
+        visualiserVoitureButton.setForeground(Color.white);
+        visualiserVoitureButton.setFont(visualiserVoitureButton.getFont().deriveFont(Font.BOLD));
+        supprimerContratButton.setBackground(new Color(78, 49, 170));
+        supprimerContratButton.setForeground(Color.white);
+        supprimerContratButton.setFont(supprimerContratButton.getFont().deriveFont(Font.BOLD));
+        nouveauContratButton.setBackground(new Color(78, 49, 170));
+        nouveauContratButton.setForeground(Color.white);
+        nouveauContratButton.setFont(nouveauContratButton.getFont().deriveFont(Font.BOLD));
     }
 
     public void setControleur(Controleur c)
@@ -183,6 +216,11 @@ public class JFrameGarage extends JFrame
         menuItemNouveauClient.addActionListener(c);
         menuItemSupprimerClientParNum.addActionListener(c);
         menuItemSupprimerClientParSelect.addActionListener(c);
+
+        //contrat
+        nouveauContratButton.addActionListener(c);
+        supprimerContratButton.addActionListener(c);
+        visualiserVoitureButton.addActionListener(c);
 
         //les different bouton pour les options/modeles
         buttonChoisirModele.addActionListener(c);

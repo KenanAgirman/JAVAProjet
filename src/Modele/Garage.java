@@ -1,4 +1,5 @@
 package Modele;
+import Controller.Controleur;
 import Garage.*;
 
 import java.io.*;
@@ -253,12 +254,11 @@ public class Garage {
     //---------		Contrats
     //----------------------------------------------------------------------------------
 
-    public void ajouteContrat(int IndVendeur, int IndClient, String voiture)
+    public void ajouteContrat(Employe Vendeur, Client client, String voiture)
     {
         Contrat.numCourantContrat++;
 
-        contrats.add(new Contrat(Contrat.numCourantContrat, getEmployes().get(IndVendeur),
-                getClients().get(IndClient), voiture));
+        contrats.add(new Contrat(Contrat.numCourantContrat, Vendeur,client, voiture));
     }
 
     public void AfficheContrats()
@@ -429,6 +429,9 @@ public class Garage {
             oos.writeObject(employes);
             oos.writeObject(clients);
 
+            oos.writeObject(Contrat.numCourantContrat);
+            oos.writeObject(contrats);
+
             oos.flush();
         } catch (FileNotFoundException e) {
             System.err.println("Fichier non trouve!");
@@ -448,6 +451,9 @@ public class Garage {
 
             employes = (LinkedList<Employe>) ois.readObject();
             clients = (LinkedList<Client>) ois.readObject();
+
+            Contrat.numCourantContrat = (Integer) ois.readObject();
+            contrats = (LinkedList<Contrat>) ois.readObject();
         } catch (FileNotFoundException e) {
             System.out.println("Fichier non trouve!");
 

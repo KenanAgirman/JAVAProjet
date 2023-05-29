@@ -12,9 +12,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
+
+import static java.util.Calendar.*;
 
 public class Controleur extends WindowAdapter implements ActionListener
 {
@@ -53,6 +53,20 @@ public class Controleur extends WindowAdapter implements ActionListener
             ligne.add(cli.getPrenom());
             ligne.add(cli.getGsm());
             modelCli.addRow(ligne);
+        }
+
+        //contrat
+
+        DefaultTableModel modelCon = (DefaultTableModel) this.viewGarage.tableContrats.getModel();
+
+        for (Contrat con:this.instanceGarage.getContrats()) {
+            Vector ligne = new Vector();
+            ligne.add(con.getNumero());
+            ligne.add(con.getVendeur().getNom() + " " + con.getVendeur().getPrenom());
+            ligne.add(con.getClient().getNom() + " " + con.getClient().getPrenom());
+            ligne.add(con.getVoiture());
+            ligne.add(con.getDatecontrat().get(DAY_OF_MONTH) + "/" + (con.getDatecontrat().get(MONTH)+1) + "/" + con.getDatecontrat().get(YEAR));
+            modelCon.addRow(ligne);
         }
 
         //importer les modeles et options
@@ -136,6 +150,15 @@ public class Controleur extends WindowAdapter implements ActionListener
         }
         if(e.getActionCommand().equals("Supprimer client selectionner")){
             onSupprimerCliSelect();
+        }
+        if(e.getActionCommand().equals("Nouveau")){
+            onNouveauContrat();
+        }
+        if(e.getActionCommand().equals("Supprimer")){
+            onSupprimerContrat();
+        }
+        if(e.getActionCommand().equals("Visualiser voiture")){
+            onVisualiserVoiture();
         }
     }
 
@@ -433,12 +456,17 @@ public class Controleur extends WindowAdapter implements ActionListener
     {
         try {
             if(viewGarage.textFieldNomProjet.getText().isEmpty()) throw new Exception("veuillez entrer un nom pour votre projet");
+            if(instanceGarage.getProjetEnCours().getModele().getNom().isEmpty()) throw new Exception("veuillez sélectionner un modèle");
 
             String ProjetNom = viewGarage.textFieldNomProjet.getText();
             instanceGarage.getProjetEnCours().setNom(ProjetNom);
             instanceGarage.getProjetEnCours().getModele().setNom( viewGarage.textFieldModele.getText());
-            instanceGarage.getProjetEnCours().getModele().setPuissance(Integer.parseInt(viewGarage.textFieldPuissance.getText()));
-            instanceGarage.getProjetEnCours().getModele().setPrixDeBase(Float.parseFloat(viewGarage.textFieldPrixDeBase.getText()));
+
+            if(!viewGarage.textFieldPuissance.getText().matches("[0-9]+")) throw new Exception("S'il vous plait entrez uniquement des nombres pour la puissance");
+            else instanceGarage.getProjetEnCours().getModele().setPuissance(Integer.parseInt(viewGarage.textFieldPuissance.getText()));
+
+            if(!viewGarage.textFieldPrixDeBase.getText().matches("[0-9.]+")) throw new Exception("S'il vous plait entrez uniquement des nombres pour le prix de base (pas de , come separateur mettez . )");
+            else instanceGarage.getProjetEnCours().getModele().setPrixDeBase(Float.parseFloat(viewGarage.textFieldPrixDeBase.getText()));
 
             if(viewGarage.radioButtonEssence.isSelected()) instanceGarage.getProjetEnCours().getModele().setMoteur("Essence");
             if(viewGarage.radioButtonDiesel.isSelected()) instanceGarage.getProjetEnCours().getModele().setMoteur("Diesel");
@@ -719,6 +747,98 @@ public class Controleur extends WindowAdapter implements ActionListener
         }
         catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur Suppresion", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    //----------------------------------------------------------------------------------
+    //---------		Fonctions pour les contrats
+    //----------------------------------------------------------------------------------
+
+    private void onNouveauContrat()
+    {
+        try {
+            if(viewGarage.textFieldNomProjet.getText().isEmpty()) throw new Exception("veuillez entrer un nom pour votre projet");
+            if(instanceGarage.getProjetEnCours().getModele().getNom().isEmpty()) throw new Exception("veuillez sélectionner un modèle");
+            if(viewGarage.tableClients.getSelectedRow() == -1) throw new Exception("veuillez sélectionner un client");
+
+            String ProjetNom = viewGarage.textFieldNomProjet.getText();
+            instanceGarage.getProjetEnCours().setNom(ProjetNom);
+            instanceGarage.getProjetEnCours().getModele().setNom( viewGarage.textFieldModele.getText());
+
+            if(!viewGarage.textFieldPuissance.getText().matches("[0-9]+")) throw new Exception("S'il vous plait entrez uniquement des nombres pour la puissance");
+            else instanceGarage.getProjetEnCours().getModele().setPuissance(Integer.parseInt(viewGarage.textFieldPuissance.getText()));
+
+            if(!viewGarage.textFieldPrixDeBase.getText().matches("[0-9.]+")) throw new Exception("S'il vous plait entrez uniquement des nombres pour le prix de base (pas de , come separateur mettez . )");
+            else instanceGarage.getProjetEnCours().getModele().setPrixDeBase(Float.parseFloat(viewGarage.textFieldPrixDeBase.getText()));
+
+            if(viewGarage.radioButtonEssence.isSelected()) instanceGarage.getProjetEnCours().getModele().setMoteur("Essence");
+            if(viewGarage.radioButtonDiesel.isSelected()) instanceGarage.getProjetEnCours().getModele().setMoteur("Diesel");
+            if(viewGarage.radioButtonElectrique.isSelected()) instanceGarage.getProjetEnCours().getModele().setMoteur("Electrique");
+            if(viewGarage.radioButtonHybride.isSelected()) instanceGarage.getProjetEnCours().getModele().setMoteur("Hybride");
+
+            String FichierNom = "Fichiers/" + ProjetNom + ".car";
+            instanceGarage.SaveProjetEnCours(FichierNom);
+
+            Client cli = instanceGarage.getClients().get(viewGarage.tableClients.getSelectedRow());
+            Calendar date = Calendar.getInstance();
+
+            instanceGarage.ajouteContrat(instanceGarage.EmpLogger,cli,viewGarage.textFieldNomProjet.getText());
+
+            DefaultTableModel tableModel = (DefaultTableModel) viewGarage.tableContrats.getModel();
+
+            Vector ligne = new Vector();
+            ligne.add(Contrat.numCourantContrat);
+            ligne.add(instanceGarage.EmpLogger.getNom() + " " + instanceGarage.EmpLogger.getPrenom());
+            ligne.add(cli.getNom() + " " + cli.getPrenom());
+            ligne.add(viewGarage.textFieldNomProjet.getText());
+            ligne.add(date.get(DAY_OF_MONTH) + "/" + (date.get(MONTH)+1) + "/" + date.get(YEAR));
+            tableModel.addRow(ligne);
+
+            //System.out.println(instanceGarage.getContrats());
+        }
+        catch (FileNotFoundException e)
+        {
+            JOptionPane.showMessageDialog(null, "Fichier non trouve...", "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Erreur IO");
+        }
+        catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void onSupprimerContrat()
+    {
+        try
+        {
+            if(viewGarage.tableContrats.getSelectedRow() == -1) throw new Exception("veuillez sélectionner un contrat à supprimer");
+
+            instanceGarage.supprimeContratParIndice(viewGarage.tableContrats.getSelectedRow());
+
+            DefaultTableModel model = (DefaultTableModel) viewGarage.tableContrats.getModel();
+            model.removeRow(viewGarage.tableContrats.getSelectedRow());
+        }
+        catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void onVisualiserVoiture()
+    {
+        try
+        {
+            if(viewGarage.tableContrats.getSelectedRow() == -1) throw new Exception("veuillez sélectionner un contrat pour visualiser");
+
+            Contrat con = instanceGarage.getContrats().get(viewGarage.tableContrats.getSelectedRow());
+
+            viewGarage.textFieldNomProjet.setText(con.getVoiture());
+
+            onOuvrirProjet();
+        }
+        catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
