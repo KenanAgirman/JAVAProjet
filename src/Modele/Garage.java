@@ -1,8 +1,9 @@
 package Modele;
-import Controller.Controleur;
+import Beans.TraceBean;
 import Garage.*;
 
 import java.io.*;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Properties;
 
@@ -17,13 +18,20 @@ public class Garage {
     private static Voiture projetEnCours = null;
     public static Employe EmpLogger = null;
     public static Properties prop;
+    private TraceBean logger;
 
     private Garage(){
-       this.clients = new LinkedList<>();
-       this.contrats = new LinkedList<>();
-       this.employes = new LinkedList<>();
-       this.options = new LinkedList<>();
-       this.modeles = new LinkedList<>();
+        this.clients = new LinkedList<>();
+        this.contrats = new LinkedList<>();
+        this.employes = new LinkedList<>();
+        this.options = new LinkedList<>();
+        this.modeles = new LinkedList<>();
+
+        //notre bean qui va exrire dans notre fichier
+        logger = new TraceBean();
+        logger.setNomFichierLog("Fichiers/Trace.log");
+
+        logger.log("Session du : " + Calendar.getInstance().getTime());
     }
 
     public static Garage getInstance(){
@@ -139,6 +147,8 @@ public class Garage {
         Personne.numCourant++;
 
         clients.add(new Client(nom, prenom, Personne.numCourant, gsm));
+
+        logger.log("Nouveau client ajouter : "+ Personne.numCourant + " - " + nom + " - " + prenom);
     }
 
     public void afficheClients()
@@ -148,6 +158,7 @@ public class Garage {
 
     public void supprimeClientParIndice(int ind)
     {
+        logger.log("client supprimer : " + clients.get(ind).getNumero() + " - " + clients.get(ind).getNom() + " - " + clients.get(ind).getPrenom());
         clients.remove(ind);
     }
 
@@ -163,6 +174,7 @@ public class Garage {
                 int veri = VerifieContratsClient(i);
                 if(veri == 0)
                 {
+                    logger.log("client supprimer : " + clients.get(i).getNumero() + " - " + clients.get(i).getNom() + " - " + clients.get(i).getPrenom());
                     clients.remove(i);
                     return i;
                 }
@@ -198,6 +210,8 @@ public class Garage {
         Personne.numCourant++;
 
         employes.add(new Employe(nom, prenom,Personne.numCourant,login, fonction));
+
+        logger.log("Nouveau employe ajouter : " + nom + " - " + prenom);
     }
 
     public void afficheEmployes()
@@ -208,6 +222,7 @@ public class Garage {
     public void supprimeEmployeParIndice(int ind)
     {
         prop.remove(employes.get(ind).getLogin());
+        logger.log("Employe supprimer : " + employes.get(ind).getNumero() + " - " + employes.get(ind).getNom() + " - " + employes.get(ind).getPrenom());
         employes.remove(ind);
     }
 
@@ -224,6 +239,7 @@ public class Garage {
                 if(veri == 0)
                 {
                     prop.remove(employes.get(i).getLogin());
+                    logger.log("Employe supprimer : " + employes.get(i).getNumero() + " - " + employes.get(i).getNom() + " - " + employes.get(i).getPrenom());
                     employes.remove(i);
                     return i;
                 }
@@ -259,6 +275,9 @@ public class Garage {
         Contrat.numCourantContrat++;
 
         contrats.add(new Contrat(Contrat.numCourantContrat, Vendeur,client, voiture));
+
+        logger.log("Nouveau contrat ajouter : " + Contrat.numCourantContrat + " " + Vendeur.getNom() + " " + Vendeur.getPrenom() + " - "
+                 +  client.getNom() + " " + client.getPrenom() + " - " + voiture);
     }
 
     public void AfficheContrats()
@@ -268,6 +287,8 @@ public class Garage {
 
     public void supprimeContratParIndice(int ind)
     {
+        logger.log("contrat supprimer : " + contrats.get(ind).getNumero() + " " + contrats.get(ind).getVendeur().getNom() + " " + contrats.get(ind).getVendeur().getPrenom() + " - "
+                + contrats.get(ind).getClient().getNom() + " " +  contrats.get(ind).getClient().getPrenom() + " " + contrats.get(ind).getClient().getPrenom() + " - " + contrats.get(ind).getVoiture());
         contrats.remove(ind);
     }
 
@@ -328,6 +349,8 @@ public class Garage {
             }
 
             br.close();
+
+            logger.log("Modeles importer avec succes");
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier " + nomFichier + " : " + e.getMessage());
         }
@@ -358,6 +381,8 @@ public class Garage {
             }
 
             br.close();
+
+            logger.log("Options importer avec succes");
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier " + nomFichier + " : " + e.getMessage());
         }
@@ -374,6 +399,8 @@ public class Garage {
 
         oos.writeObject(projetEnCours);
         oos.flush();
+
+        logger.log("Projet " + nomFichier + " Sauvegarder");
     }
 
     public void LoadProjetEnCours(String nomFichier) throws FileNotFoundException, IOException, ClassNotFoundException
@@ -382,6 +409,8 @@ public class Garage {
         ObjectInputStream ois = new ObjectInputStream(fis);
 
         projetEnCours = (Voiture) ois.readObject();
+
+        logger.log("Projet " + nomFichier + " Loader");
     }
 
 
@@ -393,7 +422,8 @@ public class Garage {
     {
         try (OutputStream output = new FileOutputStream(nomFichier)) {
             prop.store(output, "Informations de connexion et de mot de passe");
-            System.out.println("Properties sauver sur le fichier!");
+
+            logger.log("Properties sauver sur le fichier!");
         } catch (IOException e) {
             System.err.println("Erreur pendant le enregistrement sur le fichier pour les properties: " + e.getMessage());
         }
@@ -405,7 +435,8 @@ public class Garage {
 
         try (InputStream input = new FileInputStream(nomFichier)) {
             prop.load(input);
-            System.out.println("Propriétés chargées à partir du fichier.!");
+
+            logger.log("Propriétés chargées à partir du fichier!");
         } catch (IOException e) {
             System.out.println("Erreur de lecture du fichier: " + e.getMessage());
             // Fichier ne existe pas alors on va creer une par defaut
@@ -433,6 +464,8 @@ public class Garage {
             oos.writeObject(contrats);
 
             oos.flush();
+
+            logger.log("Garage sauvegarder");
         } catch (FileNotFoundException e) {
             System.err.println("Fichier non trouve!");
         } catch (IOException e) {
@@ -454,8 +487,10 @@ public class Garage {
 
             Contrat.numCourantContrat = (Integer) ois.readObject();
             contrats = (LinkedList<Contrat>) ois.readObject();
+
+            logger.log("Garage loader");
         } catch (FileNotFoundException e) {
-            System.out.println("Fichier non trouve!");
+            logger.log("Fichier non trouve pour garage, prend des valeurs par defaut!");
 
             employes = new LinkedList<>();
 
